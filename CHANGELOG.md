@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-25
+
 ### Added
 
 - Local control of Gecko spas through their in.touch2 module (UDP port 10022,
@@ -30,4 +32,5 @@ the notes of the version's GitHub Release.
   a spa (its light blinks).
 - Interface and documentation in English, French, German and Spanish.
 
-[Unreleased]: https://github.com/gboulvin/Gladys-Gecko-inTouch2/commits/main
+[Unreleased]: https://github.com/gboulvin/Gladys-Gecko-inTouch2/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/gboulvin/Gladys-Gecko-inTouch2/releases/tag/v1.0.0
