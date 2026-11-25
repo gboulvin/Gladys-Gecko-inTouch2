@@ -1,0 +1,576 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "Gecko in.touch2",
+  "description": {
+    "en": "Control your Gecko spa (in.touch2 module): temperature, jets, lights, water care.",
+    "fr": "Pilotez votre spa Gecko (module in.touch2) : température, jets, éclairage, traitement.",
+    "de": "Steuern Sie Ihren Gecko-Spa (in.touch2-Modul): Temperatur, Düsen, Licht, Wasserpflege.",
+    "es": "Controle su spa Gecko (módulo in.touch2): temperatura, chorros, luces, cuidado del agua."
+  },
+  "version": "0.0.0",
+  "docker_image": "ghcr.io/gboulvin/gladys-gecko-intouch2:0.0.0",
+  "gladys_version": ">=5.1.0",
+  "cover_image": "https://raw.githubusercontent.com/gboulvin/Gladys-Gecko-inTouch2/main/cover.png",
+  "categories": ["climate", "appliances"],
+  "transports": ["local"],
+  "network_discovery": [{ "type": "udp-active-broadcast", "ports": [10022] }],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Getting started",
+        "fr": "Pour commencer",
+        "de": "Erste Schritte",
+        "es": "Primeros pasos"
+      },
+      "description": {
+        "en": "The integration talks to the in.touch2 module of your spa on your local network, without any cloud account. Open the Discovery tab: the modules of the network are found automatically. If yours is not, type its IP address below.",
+        "fr": "L'intégration dialogue avec le module in.touch2 de votre spa sur votre réseau local, sans compte cloud. Ouvrez l'onglet Découverte : les modules du réseau sont trouvés automatiquement. Si le vôtre ne l'est pas, saisissez son adresse IP ci-dessous.",
+        "de": "Die Integration kommuniziert mit dem in.touch2-Modul Ihres Spas in Ihrem lokalen Netzwerk, ohne Cloud-Konto. Öffnen Sie den Tab „Erkennung“: Die Module im Netzwerk werden automatisch gefunden. Falls Ihres nicht gefunden wird, geben Sie unten seine IP-Adresse ein.",
+        "es": "La integración se comunica con el módulo in.touch2 de su spa en su red local, sin cuenta en la nube. Abra la pestaña Descubrimiento: los módulos de la red se encuentran automáticamente. Si el suyo no aparece, escriba su dirección IP a continuación."
+      },
+      "links": [
+        {
+          "url": "https://github.com/gboulvin/Gladys-Gecko-inTouch2#readme",
+          "label": {
+            "en": "Project page",
+            "fr": "Page du projet",
+            "de": "Projektseite",
+            "es": "Página del proyecto"
+          }
+        }
+      ]
+    },
+    {
+      "key": "spa_host",
+      "type": "string",
+      "label": {
+        "en": "in.touch2 module address (optional)",
+        "fr": "Adresse du module in.touch2 (facultatif)",
+        "de": "Adresse des in.touch2-Moduls (optional)",
+        "es": "Dirección del módulo in.touch2 (opcional)"
+      },
+      "description": {
+        "en": "Only needed when the automatic discovery does not find your spa. Give the module a fixed address in your router.",
+        "fr": "Utile uniquement si la découverte automatique ne trouve pas votre spa. Attribuez une adresse fixe au module dans votre box.",
+        "de": "Nur nötig, wenn die automatische Erkennung Ihren Spa nicht findet. Vergeben Sie dem Modul im Router eine feste Adresse.",
+        "es": "Solo es necesario si el descubrimiento automático no encuentra su spa. Asigne al módulo una dirección fija en su router."
+      },
+      "placeholder": {
+        "en": "e.g. 192.168.1.50",
+        "fr": "ex. 192.168.1.50",
+        "de": "z. B. 192.168.1.50",
+        "es": "p. ej. 192.168.1.50"
+      },
+      "required": false,
+      "default": ""
+    }
+  ],
+  "actions": [
+    {
+      "key": "scan",
+      "label": {
+        "en": "Search for spas",
+        "fr": "Rechercher les spas",
+        "de": "Nach Spas suchen",
+        "es": "Buscar spas"
+      },
+      "timeout_seconds": 60
+    },
+    {
+      "key": "test_connection",
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "timeout_seconds": 60
+    },
+    {
+      "key": "identify",
+      "label": {
+        "en": "Identify a spa",
+        "fr": "Identifier un spa",
+        "de": "Spa identifizieren",
+        "es": "Identificar un spa"
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Spa", "fr": "Spa", "de": "Spa", "es": "Spa" },
+          "required": true
+        }
+      ]
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "water_temperature_reached",
+      "label": {
+        "en": "Spa water at temperature",
+        "fr": "Eau du spa à température",
+        "de": "Spa-Wasser auf Temperatur",
+        "es": "Agua del spa a temperatura"
+      },
+      "description": {
+        "en": "The water reached the target temperature.",
+        "fr": "L'eau a atteint la température de consigne.",
+        "de": "Das Wasser hat die Solltemperatur erreicht.",
+        "es": "El agua ha alcanzado la temperatura de consigna."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Spa", "fr": "Spa", "de": "Spa", "es": "Spa" }
+        }
+      ],
+      "variables": [
+        {
+          "key": "temperature",
+          "type": "number",
+          "label": {
+            "en": "Water temperature (°C)",
+            "fr": "Température de l'eau (°C)",
+            "de": "Wassertemperatur (°C)",
+            "es": "Temperatura del agua (°C)"
+          }
+        },
+        {
+          "key": "target_temperature",
+          "type": "number",
+          "label": {
+            "en": "Target temperature (°C)",
+            "fr": "Température de consigne (°C)",
+            "de": "Solltemperatur (°C)",
+            "es": "Temperatura de consigna (°C)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "heating_changed",
+      "label": {
+        "en": "Spa heating started or stopped",
+        "fr": "Chauffe du spa démarrée ou arrêtée",
+        "de": "Spa-Heizung gestartet oder gestoppt",
+        "es": "Calefacción del spa iniciada o detenida"
+      },
+      "description": {
+        "en": "The heater of the spa started or stopped.",
+        "fr": "Le réchauffeur du spa a démarré ou s'est arrêté.",
+        "de": "Die Heizung des Spas wurde gestartet oder gestoppt.",
+        "es": "El calentador del spa se ha encendido o apagado."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Spa", "fr": "Spa", "de": "Spa", "es": "Spa" }
+        },
+        {
+          "key": "state",
+          "type": "multi_select",
+          "label": { "en": "Change", "fr": "Changement", "de": "Änderung", "es": "Cambio" },
+          "options": [
+            {
+              "value": "started",
+              "label": { "en": "Started", "fr": "Démarrée", "de": "Gestartet", "es": "Iniciada" }
+            },
+            {
+              "value": "stopped",
+              "label": { "en": "Stopped", "fr": "Arrêtée", "de": "Gestoppt", "es": "Detenida" }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "state",
+          "type": "string",
+          "label": { "en": "Change", "fr": "Changement", "de": "Änderung", "es": "Cambio" }
+        },
+        {
+          "key": "temperature",
+          "type": "number",
+          "label": {
+            "en": "Water temperature (°C)",
+            "fr": "Température de l'eau (°C)",
+            "de": "Wassertemperatur (°C)",
+            "es": "Temperatura del agua (°C)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "spa_connection_changed",
+      "label": {
+        "en": "Spa connection lost or back",
+        "fr": "Connexion au spa perdue ou rétablie",
+        "de": "Spa-Verbindung verloren oder zurück",
+        "es": "Conexión con el spa perdida o recuperada"
+      },
+      "description": {
+        "en": "The in.touch2 module stopped answering, or answers again.",
+        "fr": "Le module in.touch2 ne répond plus, ou répond de nouveau.",
+        "de": "Das in.touch2-Modul antwortet nicht mehr oder wieder.",
+        "es": "El módulo in.touch2 ha dejado de responder o vuelve a responder."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Spa", "fr": "Spa", "de": "Spa", "es": "Spa" }
+        },
+        {
+          "key": "state",
+          "type": "multi_select",
+          "label": { "en": "Change", "fr": "Changement", "de": "Änderung", "es": "Cambio" },
+          "options": [
+            {
+              "value": "lost",
+              "label": { "en": "Lost", "fr": "Perdue", "de": "Verloren", "es": "Perdida" }
+            },
+            {
+              "value": "connected",
+              "label": {
+                "en": "Back",
+                "fr": "Rétablie",
+                "de": "Wiederhergestellt",
+                "es": "Recuperada"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "state",
+          "type": "string",
+          "label": { "en": "Change", "fr": "Changement", "de": "Änderung", "es": "Cambio" }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "set_target_temperature",
+      "label": {
+        "en": "Set the spa temperature",
+        "fr": "Régler la température du spa",
+        "de": "Spa-Temperatur einstellen",
+        "es": "Ajustar la temperatura del spa"
+      },
+      "description": {
+        "en": "Change the target temperature of the water (clamped to the spa range).",
+        "fr": "Change la température de consigne de l'eau (bornée à la plage du spa).",
+        "de": "Ändert die Solltemperatur des Wassers (auf den Bereich des Spas begrenzt).",
+        "es": "Cambia la temperatura de consigna del agua (limitada al rango del spa)."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Spa", "fr": "Spa", "de": "Spa", "es": "Spa" },
+          "required": true
+        },
+        {
+          "key": "temperature",
+          "type": "number",
+          "label": {
+            "en": "Temperature (°C)",
+            "fr": "Température (°C)",
+            "de": "Temperatur (°C)",
+            "es": "Temperatura (°C)"
+          },
+          "required": true,
+          "min": 10,
+          "max": 40,
+          "default": 37
+        }
+      ],
+      "outputs": [
+        {
+          "key": "target_temperature",
+          "type": "number",
+          "label": {
+            "en": "Applied temperature (°C)",
+            "fr": "Température appliquée (°C)",
+            "de": "Angewendete Temperatur (°C)",
+            "es": "Temperatura aplicada (°C)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "set_watercare_mode",
+      "label": {
+        "en": "Set the water care mode",
+        "fr": "Régler le mode de traitement",
+        "de": "Wasserpflegemodus einstellen",
+        "es": "Ajustar el modo de cuidado"
+      },
+      "description": {
+        "en": "Change the water care program of the spa (filtration and heating schedule).",
+        "fr": "Change le programme de traitement de l'eau (filtration et horaires de chauffe).",
+        "de": "Ändert das Wasserpflegeprogramm des Spas (Filterung und Heizzeiten).",
+        "es": "Cambia el programa de cuidado del agua (filtración y horario de calefacción)."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Spa", "fr": "Spa", "de": "Spa", "es": "Spa" },
+          "required": true
+        },
+        {
+          "key": "mode",
+          "type": "select",
+          "label": { "en": "Mode", "fr": "Mode", "de": "Modus", "es": "Modo" },
+          "required": true,
+          "default": "standard",
+          "options": [
+            {
+              "value": "away",
+              "label": {
+                "en": "Away from home",
+                "fr": "Absent",
+                "de": "Abwesend",
+                "es": "Fuera de casa"
+              }
+            },
+            {
+              "value": "standard",
+              "label": { "en": "Standard", "fr": "Standard", "de": "Standard", "es": "Estándar" }
+            },
+            {
+              "value": "energy_saving",
+              "label": {
+                "en": "Energy saving",
+                "fr": "Économie d'énergie",
+                "de": "Energiesparen",
+                "es": "Ahorro de energía"
+              }
+            },
+            {
+              "value": "super_energy_saving",
+              "label": {
+                "en": "Super energy saving",
+                "fr": "Super économie d'énergie",
+                "de": "Super-Energiesparen",
+                "es": "Súper ahorro de energía"
+              }
+            },
+            {
+              "value": "weekender",
+              "label": {
+                "en": "Weekender",
+                "fr": "Week-end",
+                "de": "Wochenende",
+                "es": "Fin de semana"
+              }
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "key": "mode",
+          "type": "string",
+          "label": {
+            "en": "Applied mode",
+            "fr": "Mode appliqué",
+            "de": "Angewendeter Modus",
+            "es": "Modo aplicado"
+          }
+        }
+      ]
+    },
+    {
+      "key": "set_equipment",
+      "label": {
+        "en": "Control a pump or a light",
+        "fr": "Piloter une pompe ou un éclairage",
+        "de": "Pumpe oder Licht steuern",
+        "es": "Controlar una bomba o una luz"
+      },
+      "description": {
+        "en": "Turn a pump, the blower, the waterfall or a light off, to low or to high speed.",
+        "fr": "Éteint une pompe, le souffleur, la cascade ou un éclairage, ou le met en vitesse lente ou rapide.",
+        "de": "Schaltet eine Pumpe, das Gebläse, den Wasserfall oder ein Licht aus, auf langsam oder schnell.",
+        "es": "Apaga una bomba, el soplador, la cascada o una luz, o la pone a velocidad baja o alta."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Spa", "fr": "Spa", "de": "Spa", "es": "Spa" },
+          "required": true
+        },
+        {
+          "key": "equipment",
+          "type": "select",
+          "label": { "en": "Equipment", "fr": "Équipement", "de": "Gerät", "es": "Equipo" },
+          "required": true,
+          "default": "P1",
+          "options": [
+            {
+              "value": "P1",
+              "label": { "en": "Pump 1", "fr": "Pompe 1", "de": "Pumpe 1", "es": "Bomba 1" }
+            },
+            {
+              "value": "P2",
+              "label": { "en": "Pump 2", "fr": "Pompe 2", "de": "Pumpe 2", "es": "Bomba 2" }
+            },
+            {
+              "value": "P3",
+              "label": { "en": "Pump 3", "fr": "Pompe 3", "de": "Pumpe 3", "es": "Bomba 3" }
+            },
+            {
+              "value": "P4",
+              "label": { "en": "Pump 4", "fr": "Pompe 4", "de": "Pumpe 4", "es": "Bomba 4" }
+            },
+            {
+              "value": "P5",
+              "label": { "en": "Pump 5", "fr": "Pompe 5", "de": "Pumpe 5", "es": "Bomba 5" }
+            },
+            {
+              "value": "BL",
+              "label": { "en": "Blower", "fr": "Souffleur", "de": "Gebläse", "es": "Soplador" }
+            },
+            {
+              "value": "Waterfall",
+              "label": { "en": "Waterfall", "fr": "Cascade", "de": "Wasserfall", "es": "Cascada" }
+            },
+            {
+              "value": "LI",
+              "label": { "en": "Light", "fr": "Éclairage", "de": "Licht", "es": "Luz" }
+            },
+            {
+              "value": "L120",
+              "label": { "en": "Light 2", "fr": "Éclairage 2", "de": "Licht 2", "es": "Luz 2" }
+            }
+          ]
+        },
+        {
+          "key": "speed",
+          "type": "select",
+          "label": { "en": "State", "fr": "État", "de": "Zustand", "es": "Estado" },
+          "required": true,
+          "default": "HI",
+          "options": [
+            {
+              "value": "OFF",
+              "label": { "en": "Off", "fr": "Arrêt", "de": "Aus", "es": "Apagado" }
+            },
+            {
+              "value": "LO",
+              "label": { "en": "Low", "fr": "Lente", "de": "Langsam", "es": "Baja" }
+            },
+            {
+              "value": "HI",
+              "label": {
+                "en": "High / On",
+                "fr": "Rapide / Marche",
+                "de": "Schnell / An",
+                "es": "Alta / Encendido"
+              }
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "key": "applied",
+          "type": "boolean",
+          "label": {
+            "en": "Command applied",
+            "fr": "Commande appliquée",
+            "de": "Befehl angewendet",
+            "es": "Orden aplicada"
+          }
+        }
+      ]
+    },
+    {
+      "key": "stop_all",
+      "label": {
+        "en": "Stop the spa jets and lights",
+        "fr": "Arrêter les jets et l'éclairage du spa",
+        "de": "Düsen und Licht des Spas stoppen",
+        "es": "Detener los chorros y luces del spa"
+      },
+      "description": {
+        "en": "Turn off every running pump, the blower, the waterfall and the lights.",
+        "fr": "Éteint toutes les pompes en marche, le souffleur, la cascade et l'éclairage.",
+        "de": "Schaltet alle laufenden Pumpen, das Gebläse, den Wasserfall und das Licht aus.",
+        "es": "Apaga todas las bombas en marcha, el soplador, la cascada y las luces."
+      },
+      "timeout_seconds": 60,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Spa", "fr": "Spa", "de": "Spa", "es": "Spa" },
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "key": "stopped",
+          "type": "number",
+          "label": {
+            "en": "Equipment stopped",
+            "fr": "Équipements arrêtés",
+            "de": "Gestoppte Geräte",
+            "es": "Equipos detenidos"
+          }
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "spa_overview",
+      "label": {
+        "en": "Spa overview",
+        "fr": "Aperçu du spa",
+        "de": "Spa-Übersicht",
+        "es": "Resumen del spa"
+      },
+      "description": {
+        "en": "Water and target temperature, heating, water care, light and quick stop.",
+        "fr": "Température de l'eau et consigne, chauffe, traitement, éclairage et arrêt rapide.",
+        "de": "Wasser- und Solltemperatur, Heizung, Wasserpflege, Licht und Schnellstopp.",
+        "es": "Temperatura del agua y consigna, calefacción, cuidado, luz y parada rápida."
+      },
+      "icon": "droplet",
+      "action_timeout_seconds": 30,
+      "settings": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Spa", "fr": "Spa", "de": "Spa", "es": "Spa" },
+          "required": false
+        }
+      ]
+    }
+  ]
+}
