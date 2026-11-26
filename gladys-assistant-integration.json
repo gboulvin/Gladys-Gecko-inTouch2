@@ -8,8 +8,8 @@
     "de": "Steuern Sie Ihren Gecko-Spa (in.touch2-Modul): Temperatur, Düsen, Licht, Wasserpflege.",
     "es": "Controle su spa Gecko (módulo in.touch2): temperatura, chorros, luces, cuidado del agua."
   },
-  "version": "2.0.0",
-  "docker_image": "ghcr.io/gboulvin/gladys-gecko-intouch2:2.0.0",
+  "version": "1.0.0",
+  "docker_image": "ghcr.io/gboulvin/gladys-gecko-intouch2:1.0.0",
   "gladys_version": ">=5.1.0",
   "cover_image": "https://raw.githubusercontent.com/gboulvin/Gladys-Gecko-inTouch2/main/cover.png",
   "categories": ["climate", "appliances"],
