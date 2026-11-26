@@ -1,6 +1,6 @@
 {
   "name": "gladys-gecko-intouch2",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "description": "Gladys Assistant external integration for Gecko in.touch2 spa controllers (local UDP protocol).",
   "type": "module",
